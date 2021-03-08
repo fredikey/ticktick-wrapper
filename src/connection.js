@@ -9,14 +9,16 @@ class Connection {
   constructor() {
     /**
      * Base URI for TickTick API v2
-     * @private
+     * @public
+     * @readonly
      * @type {string}
      */
     this.baseUri = 'https://api.ticktick.com/api/v2';
 
     /**
      * CookieJar where the session cookie is stored
-     * @private
+     * @public
+     * @readonly
      */
     this.cookieJar = rp.jar();
 

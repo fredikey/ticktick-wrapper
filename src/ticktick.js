@@ -89,11 +89,32 @@ class TickTick {
       } else {
         throw new auth.errors.NoLoginProviderSelectedError();
       }
+	    this._setUserInfo(userInfo);
 
-      this._setUserInfo(userInfo);
+	    return {
+      	userInfo: {
+		      username: userInfo.username,
+		      pro: userInfo.pro,
+		      userId: userInfo.userId,
+		      inboxId: userInfo.inboxId,
+      	},
+	      cookie: this._conn.cookieJar.getCookies(this._conn.baseUri),
+      };
     } finally {
       conn.addMiddleware(auth.assertLogin);
     }
+  }
+
+  /**
+	 * Restore authenticated state of TickTick and store the session info for future calls.
+	 * @param {Object} savedInfo - Login options
+	 * @param {Object=} savedInfo.userInfo - User info
+	 * @param {Object=} savedInfo.cookie - Cookies info
+	 */
+  async restoreSession(savedInfo) {
+	  this._conn.cookieJar.setCookie(savedInfo.cookie, this._conn.baseUri);
+	  this._conn.addMiddleware(auth.assertLogin);
+	  this._setUserInfo(savedInfo.userInfo);
   }
 
   /**
