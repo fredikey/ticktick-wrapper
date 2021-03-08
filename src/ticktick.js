@@ -98,7 +98,7 @@ class TickTick {
 		      userId: userInfo.userId,
 		      inboxId: userInfo.inboxId,
       	},
-	      cookie: this._conn.cookieJar.getCookies(this._conn.baseUri),
+	      cookie: this._conn.cookieJar.getCookieString(this._conn.baseUri),
       };
     } finally {
       conn.addMiddleware(auth.assertLogin);
@@ -112,7 +112,9 @@ class TickTick {
 	 * @param {Object=} savedInfo.cookie - Cookies info
 	 */
   async restoreSession(savedInfo) {
-	  this._conn.cookieJar.setCookie(savedInfo.cookie, this._conn.baseUri);
+	  savedInfo.cookie.split(';').map(item => {
+		  this._conn.cookieJar.setCookie(item, this._conn.baseUri);
+	  })
 	  this._conn.addMiddleware(auth.assertLogin);
 	  this._setUserInfo(savedInfo.userInfo);
   }
